@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                 String    @id @default(cuid())
+  userId              String    @map("user_id")
+  type                  String?
+  provider           String
+  providerAccountId  String    @map("provider_account_id")
+  token_type         String?
+  refresh_token      String?   @db.Text
+  access_token       String?   @db.Text
+  expires_at         Int?
+  scope              String?
+  id_token           String? @db.Text
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String?  @map("user_id")
+  sessionToken String   @db.Text @map("session_token") @unique
+  accessToken  String?  @db.Text @map("access_token")
+  expires      DateTime
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+
+model User {
+  id                String             @id @default(cuid())
+  name              String?
+  email             String?            @unique
+  emailVerified     DateTime?
+  image             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  accounts          Account[]
+  sessions          Session[]
+  groups            GroupMember[]
+  transactions      Transaction[]      @relation("CreatedTransactions")
+  TransactionSplits TransactionSplit[]
+  settlementsPaid   Settlement[]       @relation("Payer")
+  settlementsReceived Settlement[]     @relation("Payee")
+}
+
+model Transaction {
+  id          String          @id @default(uuid())
+  group       Group           @relation(fields: [groupId], references: [id])
+  groupId     String
+  description String
+  type        TransactionType
+  amount      Float
+  createdBy   User            @relation("CreatedTransactions", fields: [createdById], references: [id])
+  createdById String
+  category    Category        @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  splits      TransactionSplit[]
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  title        String
+  transactions Transaction[]
+}
+
+model Group {
+  id           String        @id @default(uuid())
+  name         String
+  members      GroupMember[]
+  transactions Transaction[]
+  settlements  Settlement[]
+  transactionSplits TransactionSplit[]
+}
+
+model GroupMember {
+  id        String  @id @default(uuid())
+  group     Group   @relation(fields: [groupId], references: [id])
+  groupId   String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  joinedAt  DateTime @default(now())
+  role      String
+}
+
+model TransactionSplit {
+  id            String       @id @default(uuid())
+  transaction   Transaction  @relation(fields: [transactionId], references: [id])
+  transactionId String
+  amount        Float
+  user          User         @relation(fields: [userId], references: [id])
+  userId        String
+  group         Group        @relation(fields: [groupId], references: [id])
+  groupId       String
+}
+
+model Settlement {
+  id         String  @id @default(uuid())
+  payer      User    @relation("Payer", fields: [payerId], references: [id])
+  payerId    String
+  payee      User    @relation("Payee", fields: [payeeId], references: [id])
+  payeeId    String
+  amount     Float
+  group      Group   @relation(fields: [groupId], references: [id])
+  groupId    String
+  settledAt  DateTime @default(now())
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+}
