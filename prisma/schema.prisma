@@ -14,20 +14,20 @@ datasource db {
 }
 
 model Account {
-  id                 String    @id @default(cuid())
-  userId              String    @map("user_id")
-  type                  String?
-  provider           String
-  providerAccountId  String    @map("provider_account_id")
-  token_type         String?
-  refresh_token      String?   @db.Text
-  access_token       String?   @db.Text
-  expires_at         Int?
-  scope              String?
-  id_token           String? @db.Text
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String   @id @default(cuid())
+  userId            Int      @map("user_id")
+  type              String?
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  token_type        String?
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  scope             String?
+  id_token          String?  @db.Text
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -35,97 +35,96 @@ model Account {
 
 model Session {
   id           String   @id @default(cuid())
-  userId       String?  @map("user_id")
-  sessionToken String   @db.Text @map("session_token") @unique
-  accessToken  String?  @db.Text @map("access_token")
+  userId       Int?     @map("user_id")
+  sessionToken String   @unique @map("session_token") @db.Text
+  accessToken  String?  @map("access_token") @db.Text
   expires      DateTime
-  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   @@map("sessions")
 }
 
-
 model User {
-  id                String             @id @default(cuid())
-  name              String?
-  email             String?            @unique
-  emailVerified     DateTime?
-  image             String?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  accounts          Account[]
-  sessions          Session[]
-  groups            GroupMember[]
-  transactions      Transaction[]      @relation("CreatedTransactions")
-  TransactionSplits TransactionSplit[]
-  settlementsPaid   Settlement[]       @relation("Payer")
-  settlementsReceived Settlement[]     @relation("Payee")
+  id                  Int                @id @default(autoincrement())
+  name                String?
+  email               String?            @unique
+  emailVerified       DateTime?
+  image               String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  accounts            Account[]
+  sessions            Session[]
+  groups              GroupMember[]
+  transactions        Transaction[]      @relation("CreatedTransactions")
+  TransactionSplits   TransactionSplit[]
+  settlementsPaid     Settlement[]       @relation("Payer")
+  settlementsReceived Settlement[]       @relation("Payee")
 }
 
 model Transaction {
-  id          String          @id @default(uuid())
-  group       Group           @relation(fields: [groupId], references: [id])
-  groupId     String
+  id          Int                @id @default(autoincrement())
+  group       Group?             @relation(fields: [groupId], references: [id])
+  groupId     Int?
   description String
   type        TransactionType
   amount      Float
-  createdBy   User            @relation("CreatedTransactions", fields: [createdById], references: [id])
-  createdById String
-  category    Category        @relation(fields: [categoryId], references: [id])
-  categoryId  String
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  createdBy   User               @relation("CreatedTransactions", fields: [createdById], references: [id])
+  createdById Int
+  category    Category           @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   splits      TransactionSplit[]
 }
 
 model Category {
-  id           String        @id @default(uuid())
+  id           Int           @id @default(autoincrement())
   title        String
   transactions Transaction[]
 }
 
 model Group {
-  id           String        @id @default(uuid())
-  name         String
-  members      GroupMember[]
-  transactions Transaction[]
-  settlements  Settlement[]
+  id                Int                @id @default(autoincrement())
+  name              String
+  members           GroupMember[]
+  transactions      Transaction[]
+  settlements       Settlement[]
   transactionSplits TransactionSplit[]
 }
 
 model GroupMember {
-  id        String  @id @default(uuid())
-  group     Group   @relation(fields: [groupId], references: [id])
-  groupId   String
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String
-  joinedAt  DateTime @default(now())
-  role      String
+  id       Int      @id @default(autoincrement())
+  group    Group    @relation(fields: [groupId], references: [id])
+  groupId  Int
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  joinedAt DateTime @default(now())
+  role     String
 }
 
 model TransactionSplit {
-  id            String       @id @default(uuid())
-  transaction   Transaction  @relation(fields: [transactionId], references: [id])
-  transactionId String
+  id            Int         @id @default(autoincrement())
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId Int
   amount        Float
-  user          User         @relation(fields: [userId], references: [id])
-  userId        String
-  group         Group        @relation(fields: [groupId], references: [id])
-  groupId       String
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+  group         Group       @relation(fields: [groupId], references: [id])
+  groupId       Int
 }
 
 model Settlement {
-  id         String  @id @default(uuid())
-  payer      User    @relation("Payer", fields: [payerId], references: [id])
-  payerId    String
-  payee      User    @relation("Payee", fields: [payeeId], references: [id])
-  payeeId    String
-  amount     Float
-  group      Group   @relation(fields: [groupId], references: [id])
-  groupId    String
-  settledAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  payer     User     @relation("Payer", fields: [payerId], references: [id])
+  payerId   Int
+  payee     User     @relation("Payee", fields: [payeeId], references: [id])
+  payeeId   Int
+  amount    Float
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   Int
+  settledAt DateTime @default(now())
 }
 
 enum TransactionType {
