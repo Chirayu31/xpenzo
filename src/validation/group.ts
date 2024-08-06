@@ -1,3 +1,4 @@
+import { UpdateGroupMemberOperation } from '@/utils/constants'
 import { z } from 'zod'
 
 export const AddGroupSchema = z.object({
@@ -8,4 +9,9 @@ export const AddGroupSchema = z.object({
     .string()
     .min(3, { message: 'Name should be atleast 3 characters' })
     .max(50, { message: 'Name should be atmost 50 characters' }),
+})
+
+export const UpdateGroupMemberSchema = z.object({
+  userId: z.number({ message: 'Invalid Data' }),
+  operation: z.nativeEnum(UpdateGroupMemberOperation),
 })
