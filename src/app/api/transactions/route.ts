@@ -79,18 +79,38 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: result.error.message }, { status: 422 })
   }
 
-  const updateData = {
-    description: result.data.description,
-    amount: result.data.amount,
-    groupId: result.data.group_id,
-    categoryId: result.data.category_id,
-    type: TransactionType.EXPENSE,
-  }
-
   try {
-    const updatedTransaction = await prisma.transaction.update({
-      where: { id: Number(data.id) },
-      data: updateData,
+    const updatedTransaction = await prisma.$transaction(async (prisma) => {
+      const transaction = await prisma.transaction.findUnique({
+        where: { id: Number(data.id) },
+      })
+
+      if (!transaction) {
+        return NextResponse.json(
+          { message: 'Transaction not found' },
+          { status: 404 }
+        )
+      }
+
+      const updatedTx = await prisma.transaction.update({
+        where: { id: Number(data.id) },
+        data: {
+          description: result.data.description,
+          amount: result.data.amount,
+          categoryId: result.data.category_id,
+          type: result.data.type,
+          groupId: result.data.group_id,
+        },
+        include: {
+          category: true,
+          createdBy: {
+            select: { id: true, name: true },
+          },
+          group: { select: { id: true, name: true } },
+        },
+      })
+
+      return updatedTx
     })
 
     return NextResponse.json(updatedTransaction)
