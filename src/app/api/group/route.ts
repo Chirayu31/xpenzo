@@ -1,9 +1,12 @@
 import prisma from '@/utils/prismaClient'
 import { AddGroupSchema } from '@/validation/group'
 import { NextRequest, NextResponse } from 'next/server'
+import authOptions from '../auth/[...nextauth]/authOptions'
+import { getServerSession } from 'next-auth'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
+  const userSession = await getServerSession(authOptions)
   const result = AddGroupSchema.safeParse(body)
 
   if (!result.success) {
@@ -23,7 +26,7 @@ export async function POST(req: NextRequest) {
 
       await prisma.groupMember.create({
         data: {
-          userId: 0, // Add the current user id here
+          userId: userSession?.user.id,
           groupId: group.id,
           role: 'ADMIN',
         },

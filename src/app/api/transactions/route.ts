@@ -5,22 +5,24 @@ import {
   startOfYear,
 } from '@/utils/transactionUtility'
 import { AddTransactionModalSchema } from '@/validation/transactions'
-import { TransactionType } from '@prisma/client'
+import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
+import authOptions from '../auth/[...nextauth]/authOptions'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
+  const user = await getServerSession(authOptions)
   const result = AddTransactionModalSchema.safeParse(body)
 
   if (result.success) {
     const transaction = await prisma.transaction.create({
       data: {
         description: result.data.description,
-        type: TransactionType.EXPENSE,
+        type: result.data.type,
         amount: result.data.amount,
         groupId: result.data.group_id,
         categoryId: result.data.category_id,
-        createdById: 0,
+        createdById: user?.user.id,
       },
     })
 
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const timeline = searchParams.get('timeline')
-
+  const user = await getServerSession(authOptions)
   let startDate: Date | undefined
 
   const now = new Date()
@@ -58,7 +60,10 @@ export async function GET(req: NextRequest) {
   }
 
   const transactions = await prisma.transaction.findMany({
-    where: startDate ? { createdAt: { gte: startDate } } : undefined,
+    where: {
+      createdAt: { gte: startDate },
+      createdById: user?.user.id,
+    },
   })
 
   return NextResponse.json(transactions)

@@ -1,9 +1,12 @@
 import prisma from '@/utils/prismaClient'
 import { AddCategoryModalSchema } from '@/validation/category'
+import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
+import authOptions from '../auth/[...nextauth]/authOptions'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
+  const userSession = await getServerSession(authOptions)
   const result = AddCategoryModalSchema.safeParse(body)
 
   if (result.success) {
@@ -11,7 +14,7 @@ export async function POST(req: NextRequest) {
       data: {
         title: result.data.title,
         type: result.data.type,
-        userId: 0,
+        userId: userSession?.user.id,
       },
     })
 
@@ -21,8 +24,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+  const userSession = await getServerSession(authOptions)
   const categories = await prisma.category.findMany({
-    where: { userId: 0 },
+    where: { userId: userSession?.user.id },
   })
 
   return NextResponse.json(categories)
