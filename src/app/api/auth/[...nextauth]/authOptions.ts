@@ -11,6 +11,24 @@ const authOptions: AuthOptions = {
     }),
   ],
   adapter: PrismaAdapter(prisma),
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = token.sub
+      }
+      return session
+    },
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.uid = user.id
+      }
+      return token
+    },
+  },
+  session: {
+    strategy: 'jwt',
+  },
+  secret: process.env.NEXTAUTH_SECRET!,
 }
 
 export default authOptions
