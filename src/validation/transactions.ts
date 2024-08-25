@@ -14,6 +14,7 @@ export const AddTransactionModalSchema = z.object({
     .max(1000000, { message: 'Amount must be less than 1000000' }),
   group_id: z.coerce.number().default(0).optional(),
   category_id: z.coerce.number().optional().default(1),
+  date: z.date().optional(),
 })
 
 const splitSchema = z.object({
