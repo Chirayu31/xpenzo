@@ -32,18 +32,19 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useState } from 'react'
 import TransactionSplitForm from './split/TransactionSplitForm'
+import { TransactionType } from '@prisma/client'
 
 interface TransactionFormProps {
   form: UseFormReturn<z.infer<typeof AddTransactionModalSchema>>
 }
 
 const mockCategories = [
-  { id: 1, name: 'Salary', type: 'income' },
-  { id: 2, name: 'Rent', type: 'expense' },
-  { id: 3, name: 'Groceries', type: 'expense' },
-  { id: 4, name: 'Entertainment', type: 'expense' },
-  { id: 5, name: 'Utilities', type: 'expense' },
-  { id: 6, name: 'Investment', type: 'savings' },
+  { id: 1, name: 'Salary', type: TransactionType.INCOME },
+  { id: 2, name: 'Rent', type: TransactionType.EXPENSE },
+  { id: 3, name: 'Groceries', type: TransactionType.EXPENSE },
+  { id: 4, name: 'Entertainment', type: TransactionType.EXPENSE },
+  { id: 5, name: 'Utilities', type: TransactionType.EXPENSE },
+  { id: 6, name: 'Investment', type: TransactionType.INCOME },
 ]
 
 const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
@@ -53,9 +54,38 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
     setIsSplit(checked)
   }
 
+  const getCategoryType = (categoryId: number) => {
+    const transactionType = mockCategories.find(category => category.id === categoryId)?.type
+    return transactionType
+  }
+
+  const handleFormSubmit = (data: z.infer<typeof AddTransactionModalSchema>) => {
+    try{
+      const transactionType = getCategoryType(data.category_id)
+      data.type = transactionType
+
+      console.log(data)
+
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
+
+  const handleFormInvalid = (data: any) => {
+    try{
+      console.log(data)
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={() => {}} className='space-y-4'>
+      <form onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)}  className='space-y-4'>
         <FormField
           control={form.control}
           name='description'
@@ -92,15 +122,16 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <Select>
-                    <SelectTrigger id='category' {...field}>
+                  <Select onValueChange={field.onChange}>
+                    <SelectTrigger id='category'>
                       <SelectValue placeholder='Select category' />
                     </SelectTrigger>
                     <SelectContent>
                       {mockCategories.map((category) => (
                         <SelectItem
                           key={category.id}
-                          value={category.id.toString()}>
+                          value={category.id.toString()}
+                          >
                           {category.name}
                         </SelectItem>
                       ))}

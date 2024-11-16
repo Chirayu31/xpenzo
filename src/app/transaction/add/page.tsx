@@ -13,6 +13,8 @@ const AddTransaction = () => {
       resolver: zodResolver(AddTransactionModalSchema),
       defaultValues: {
         date: new Date(),
+        description: '',
+        amount: 0
       },
     }
   )

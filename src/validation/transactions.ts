@@ -7,13 +7,13 @@ export const AddTransactionModalSchema = z.object({
     .max(50, { message: 'Description must be less than 50 characters' }),
   type: z.nativeEnum(TransactionType, {
     message: 'Type must be either income or expense',
-  }),
+  }).optional(),
   amount: z.coerce
     .number({ message: 'Amount must be a valid number' })
     .positive({ message: 'Amount must be a positive number' })
     .max(1000000, { message: 'Amount must be less than 1000000' }),
   group_id: z.coerce.number().default(0).optional(),
-  category_id: z.coerce.number().optional().default(1),
+  category_id: z.coerce.number(),
   date: z.date().optional(),
 })
 
