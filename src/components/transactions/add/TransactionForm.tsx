@@ -1,6 +1,6 @@
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
-import { AddTransactionModalSchema } from '@/validation/transactions'
+import { AddTransactionModalSchema, AddSplitsSchema } from '@/validation/transactions'
 import {
   Form,
   FormControl,
@@ -49,6 +49,7 @@ const mockCategories = [
 
 const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
   const [isSplit, setIsSplit] = useState(false)
+  const [splitData, setSplitData] = useState<z.infer<typeof AddSplitsSchema>>()
 
   const splitCheckHandler = (checked: boolean) => {
     setIsSplit(checked)
@@ -63,6 +64,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
     try{
       const transactionType = getCategoryType(data.category_id)
       data.type = transactionType
+      
+      if(splitData){
+        // do something
+        console.log(splitData)
+      }
 
       console.log(data)
 
@@ -185,7 +191,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
           )}
         />
 
-        {isSplit && <TransactionSplitForm form={form} />}
+        {isSplit && <TransactionSplitForm form={form} setSplitData={setSplitData} splitData={splitData} />}
 
         <div className='flex items-center space-x-2'>
           <Checkbox

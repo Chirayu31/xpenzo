@@ -13,7 +13,7 @@ export const AddTransactionModalSchema = z.object({
     .positive({ message: 'Amount must be a positive number' })
     .max(1000000, { message: 'Amount must be less than 1000000' }),
   group_id: z.coerce.number().default(0).optional(),
-  category_id: z.coerce.number(),
+  category_id: z.coerce.number({ message: 'Please Select a Category' }),
   date: z.date().optional(),
 })
 
@@ -23,7 +23,7 @@ const splitSchema = z.object({
 })
 
 export const AddSplitsSchema = z.object({
-  splits: z.array(splitSchema).nonempty(),
+  splits: z.array(splitSchema),
 })
 
 export const UpdateSplitsSchema = z.object({
