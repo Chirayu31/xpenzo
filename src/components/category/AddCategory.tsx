@@ -2,14 +2,35 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { TransactionType } from "@prisma/client";
 import { Button } from "../ui/button";
+import { z } from "zod";
+import { CategorySchema } from "@/validation/category";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const AddCategory = () => {
-  const form = useForm();
+  const form = useForm<z.infer<typeof CategorySchema>>({
+    resolver: zodResolver(CategorySchema),
+    defaultValues: {
+      title: "",
+      type: TransactionType.EXPENSE,
+    },
+  });
+
+  const handleFormSubmit = (data: z.infer<typeof CategorySchema>) => {
+    console.log(data);
+  };
+
+  const handleFormInvalid = (data: any) => {
+    try {
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Card>
@@ -18,7 +39,9 @@ const AddCategory = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form>
+          <form
+            onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)}
+          >
             <FormField
               control={form.control}
               name="title"
@@ -28,6 +51,7 @@ const AddCategory = () => {
                   <FormControl>
                     <Input placeholder="Utilities" {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -58,6 +82,7 @@ const AddCategory = () => {
                       </FormItem>
                     </RadioGroup>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
