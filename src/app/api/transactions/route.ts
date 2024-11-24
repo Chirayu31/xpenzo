@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const transaction = await prisma.transaction.create({
       data: {
         description: result.data.description,
-        type: result.data.type,
+        type: result.data.type!,
         amount: result.data.amount,
         groupId: result.data.group_id,
         categoryId: result.data.category_id,

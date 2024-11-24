@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       data: {
         title: result.data.title,
         type: result.data.type,
-        userId: userSession?.user.id,
+        userId: parseInt(userSession?.user.id, 10),
       },
     });
 

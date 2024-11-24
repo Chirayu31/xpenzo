@@ -10,6 +10,9 @@ import { Button } from "../ui/button";
 import { z } from "zod";
 import { CategorySchema } from "@/validation/category";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import apiCaller from "@/utils/apiCaller";
+import { ADD_CATEGORY_ROUTE } from "@/constants/apiRoutes";
 
 const AddCategory = () => {
   const form = useForm<z.infer<typeof CategorySchema>>({
@@ -20,13 +23,22 @@ const AddCategory = () => {
     },
   });
 
-  const handleFormSubmit = (data: z.infer<typeof CategorySchema>) => {
-    console.log(data);
-  };
-
-  const handleFormInvalid = (data: any) => {
-    try {
+  const formMutation = useMutation({
+    mutationFn: async (values: z.infer<typeof CategorySchema>) => {
+      const response = await apiCaller.post(ADD_CATEGORY_ROUTE, values);
+      return response;
+    },
+    onSuccess: (data) => {
       console.log(data);
+    },
+    onError: (error: Error) => {
+      console.log(error);
+    },
+  });
+
+  const handleFormSubmit = async (data: z.infer<typeof CategorySchema>) => {
+    try {
+      await formMutation.mutateAsync(data);
     } catch (e) {
       console.log(e);
     }
@@ -40,7 +52,7 @@ const AddCategory = () => {
       <CardContent>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)}
+            onSubmit={form.handleSubmit(handleFormSubmit)}
           >
             <FormField
               control={form.control}
