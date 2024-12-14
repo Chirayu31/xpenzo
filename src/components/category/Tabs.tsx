@@ -1,13 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { TransactionType } from "@prisma/client";
 import CategoryTabsContent from "./CategoryTabsContent";
-import { Button } from "../ui/button";
 import AddCategory from "./AddCategory";
+import { category } from "@/types/category";
+import { useQuery } from "@tanstack/react-query";
+import apiCaller from "@/utils/apiCaller";
 
-const Add = "Add"
+const Add = "Add";
 
 const CategoryTabs = () => {
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["category"],
+    queryFn: async () => await apiCaller.get("/api/category"),
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p className="text-red-400">Internal Server Error.</p>;
+  }
+
   return (
     <Tabs className="w-[500px] mt-8" defaultValue={TransactionType.EXPENSE}>
       <TabsList>
@@ -17,10 +32,10 @@ const CategoryTabs = () => {
       </TabsList>
 
       <TabsContent value={TransactionType.EXPENSE}>
-        <CategoryTabsContent title={"Expense"} />
+        <CategoryTabsContent type={TransactionType.EXPENSE} categories={data}/>
       </TabsContent>
       <TabsContent value={TransactionType.INCOME}>
-        <CategoryTabsContent title={"Income"} />
+        <CategoryTabsContent type={TransactionType.INCOME} categories={data}/>
       </TabsContent>
       <TabsContent value={Add}>
         <AddCategory />

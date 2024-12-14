@@ -1,8 +1,10 @@
+"use client";
 import CategoryHeader from "@/components/category/Header";
 import CategoryTabs from "@/components/category/Tabs";
 import React from "react";
 
 const Category = () => {
+  
   return (
     <div className="m-10">
       <CategoryHeader />

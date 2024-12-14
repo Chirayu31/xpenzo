@@ -1,31 +1,30 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { category } from "@/types/category";
+import { convertToSentenceCase } from "@/utils/commonUtility";
 
 interface CategoryTabsContentProps {
-  title: string;
+  type: string;
   categories?: category[];
 }
 
 const CategoryTabsContent: React.FC<CategoryTabsContentProps> = ({
-  title,
+  type,
   categories,
 }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle>{convertToSentenceCase(type)}</CardTitle>
       </CardHeader>
 
       <CardContent>
         {categories ? (
-          categories.map((category) => (
-            <p key={category.id}>{category.title}</p>
-          ))
+          categories
+            .filter((category) => category.type === type)
+            .map((category) => <p key={category.id}>{category.title}</p>)
         ) : (
-          <p>
-            No categories added yet
-          </p>
+          <p>No categories added yet</p>
         )}
       </CardContent>
     </Card>

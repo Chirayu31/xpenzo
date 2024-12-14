@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const userSession = await getServerSession(authOptions);
   const categories = await prisma.category.findMany({
-    where: { userId: userSession?.user.id },
+    where: { userId: parseInt(userSession?.user.id) },
   });
 
   return NextResponse.json(categories);
