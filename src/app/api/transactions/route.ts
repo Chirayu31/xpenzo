@@ -35,36 +35,51 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const timeline = searchParams.get('timeline')
+  const startDate = searchParams.get('startDate')
+  const endDate = searchParams.get('endDate')
+  const type = searchParams.get('type')
   const user = await getServerSession(authOptions)
-  let startDate: Date | undefined
 
-  const now = new Date()
+  if (!startDate || !endDate) {
+    return NextResponse.json(
+      { message: 'Start date and end date are required' },
+      { status: 400 }
+    )
+  }
 
-  switch (timeline) {
-    case 'd':
-      startDate = startOfDay(now)
-      break
-    case 'm':
-      startDate = startOfMonth(now)
-      break
-    case 'y':
-      startDate = startOfYear(now)
-      break
-    case 'all':
-      startDate = undefined
-      break
-    default:
-      return NextResponse.json(
-        { message: 'Invalid timeline parameter' },
-        { status: 400 }
-      )
+  if (isNaN(Date.parse(startDate)) || isNaN(Date.parse(endDate))) {
+    return NextResponse.json(
+      { message: 'Invalid date format' },
+      { status: 400 }
+    )
+  }
+
+  if (new Date(startDate) > new Date(endDate)) {
+    return NextResponse.json(
+      { message: 'Start date cannot be after end date' },
+      { status: 400 }
+    )
+  }
+
+  const endOfDay = new Date(endDate)
+  endOfDay.setHours(23, 59, 59, 999)
+
+  const whereClause: any = {
+    createdById: parseInt(user?.user.id) || 0,
+    createdAt: {
+      gte: new Date(startDate),
+      lte: endOfDay,
+    },
+  }
+
+  if (type) {
+    whereClause.type = type
   }
 
   const transactions = await prisma.transaction.findMany({
-    where: {
-      createdAt: { gte: startDate },
-      createdById: user?.user.id,
+    where: whereClause,
+    orderBy: {
+      createdAt: 'desc',
     },
   })
 

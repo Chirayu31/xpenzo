@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { TransactionType } from '@prisma/client'
 import CategoryTabsContent from './CategoryTabsContent'
 import AddCategory from './AddCategory'
-import { category } from '@/types/category'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import apiCaller from '@/utils/apiCaller'
 

@@ -1,19 +1,19 @@
-export function startOfDay(date: Date): Date {
-  const newDate = new Date(date)
-  newDate.setHours(0, 0, 0, 0)
-  return newDate
-}
+export function stringToHexColor(str: string): string {
+  let hash = 0
+  const len = str.length
 
-export function startOfMonth(date: Date): Date {
-  const newDate = new Date(date)
-  newDate.setDate(1)
-  newDate.setHours(0, 0, 0, 0)
-  return newDate
-}
+  for (let i = 0; i < len; i++) {
+    // Multiply hash by 31 and add the char code (31 is a small prime, often used in string hashing)
+    hash = (hash * 31 + str.charCodeAt(i)) | 0 // |0 forces 32-bit integer arithmetic
+  }
 
-export function startOfYear(date: Date): Date {
-  const newDate = new Date(date)
-  newDate.setMonth(0, 1)
-  newDate.setHours(0, 0, 0, 0)
-  return newDate
+  // Convert the hash into a hex color code
+  let color = '#'
+  for (let i = 0; i < 3; i++) {
+    // Extract each 8-bit block (for R, G, and B)
+    const value = (hash >> (i * 8)) & 0xff
+    color += value.toString(16).padStart(2, '0')
+  }
+
+  return color
 }
