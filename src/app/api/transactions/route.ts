@@ -12,6 +12,7 @@ import authOptions from '../auth/[...nextauth]/authOptions'
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const user = await getServerSession(authOptions)
+  const userId = parseInt(user?.user.id)
   const result = AddTransactionModalSchema.safeParse(body)
 
   if (result.success) {
@@ -22,7 +23,8 @@ export async function POST(req: NextRequest) {
         amount: result.data.amount,
         groupId: result.data.group_id,
         categoryId: result.data.category_id,
-        createdById: user?.user.id,
+        createdById: userId,
+        createdAt: result.data.date,
       },
     })
 

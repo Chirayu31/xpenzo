@@ -1,10 +1,12 @@
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
-import { AddTransactionModalSchema, AddSplitsSchema } from '@/validation/transactions'
+import {
+  AddTransactionModalSchema,
+  AddSplitsSchema,
+} from '@/validation/transactions'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,70 +30,78 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
 import { useState } from 'react'
-import TransactionSplitForm from './split/TransactionSplitForm'
 import { TransactionType } from '@prisma/client'
+import apiCaller from '@/utils/apiCaller'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { category } from '@/types/category'
 
 interface TransactionFormProps {
   form: UseFormReturn<z.infer<typeof AddTransactionModalSchema>>
 }
 
-const mockCategories = [
-  { id: 1, name: 'Salary', type: TransactionType.INCOME },
-  { id: 2, name: 'Rent', type: TransactionType.EXPENSE },
-  { id: 3, name: 'Groceries', type: TransactionType.EXPENSE },
-  { id: 4, name: 'Entertainment', type: TransactionType.EXPENSE },
-  { id: 5, name: 'Utilities', type: TransactionType.EXPENSE },
-  { id: 6, name: 'Investment', type: TransactionType.INCOME },
-]
-
 const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
   const [isSplit, setIsSplit] = useState(false)
   const [splitData, setSplitData] = useState<z.infer<typeof AddSplitsSchema>>()
+  const {
+    isLoading: categoryLoading,
+    isError: isCategoryError,
+    data: categories,
+    error: categoryError,
+  } = useQuery({
+    queryKey: ['category'],
+    queryFn: async () => await apiCaller.get('/api/category'),
+  })
+
+  const formMutation = useMutation({
+    mutationFn: async (values: z.infer<typeof AddTransactionModalSchema>) => {
+      const response = await apiCaller.post('/api/transactions', values)
+      return response
+    },
+    onSuccess: () => {
+      form.reset()
+    },
+    onError: (error: Error) => {
+      console.log(error)
+    },
+  })
 
   const splitCheckHandler = (checked: boolean) => {
     setIsSplit(checked)
   }
 
   const getCategoryType = (categoryId: number) => {
-    const transactionType = mockCategories.find(category => category.id === categoryId)?.type
+    const transactionType: TransactionType | undefined = categories?.find(
+      (category: category) => category.id === categoryId
+    )?.type
     return transactionType
   }
 
-  const handleFormSubmit = (data: z.infer<typeof AddTransactionModalSchema>) => {
-    try{
+  const handleFormSubmit = (
+    data: z.infer<typeof AddTransactionModalSchema>
+  ) => {
+    try {
       const transactionType = getCategoryType(data.category_id)
       data.type = transactionType
-      
-      if(splitData){
-        // do something
-        console.log(splitData)
-      }
-
-      console.log(data)
-
-    }
-    catch(e)
-    {
+      formMutation.mutate(data)
+    } catch (e) {
       console.log(e)
     }
   }
 
   const handleFormInvalid = (data: any) => {
-    try{
+    try {
       console.log(data)
-    }
-    catch(e)
-    {
+    } catch (e) {
       console.log(e)
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)}  className='space-y-4'>
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)}
+        className='space-y-4'>
         <FormField
           control={form.control}
           name='description'
@@ -133,14 +143,21 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
                       <SelectValue placeholder='Select category' />
                     </SelectTrigger>
                     <SelectContent>
-                      {mockCategories.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={category.id.toString()}
-                          >
-                          {category.name}
-                        </SelectItem>
-                      ))}
+                      {categoryLoading && <p>Loading...</p>}
+
+                      {categories && categories.length === 0 && (
+                        <p className='px-2 text-sm'>No categories added yet</p>
+                      )}
+
+                      {categories &&
+                        categories.length > 0 &&
+                        categories.map((category: category) => (
+                          <SelectItem
+                            key={category.id}
+                            value={category.id.toString()}>
+                            {category.title}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -191,17 +208,23 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
           )}
         />
 
-        {isSplit && <TransactionSplitForm form={form} setSplitData={setSplitData} splitData={splitData} />}
+        {/* {isSplit && (
+          <TransactionSplitForm
+            form={form}
+            setSplitData={setSplitData}
+            splitData={splitData}
+          />
+        )} */}
 
-        <div className='flex items-center space-x-2'>
+        {/* <div className='flex items-center space-x-2'>
           <Checkbox
             id='split-transaction'
             onCheckedChange={splitCheckHandler}
           />
           <Label htmlFor='split-transaction'>Split Transaction</Label>
-        </div>
+        </div> */}
 
-        <Button className='w-full' variant={'secondary'} type='submit'>
+        <Button className='w-full' variant={'default'} type='submit'>
           Submit
         </Button>
       </form>
