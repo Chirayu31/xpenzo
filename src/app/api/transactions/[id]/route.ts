@@ -1,5 +1,7 @@
 import prisma from '@/utils/prismaClient'
+import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
+import authOptions from '../../auth/[...nextauth]/authOptions'
 
 export async function GET(
   req: Request,
@@ -7,8 +9,10 @@ export async function GET(
 ) {
   try {
     const id = parseInt(params.id)
+    const user = await getServerSession(authOptions)
+    const userId = parseInt(user?.user.id)
 
-    if (isNaN(id)) {
+    if (isNaN(id) || isNaN(userId)) {
       return NextResponse.json(
         { error: 'Invalid transaction ID' },
         { status: 400 }
@@ -16,7 +20,7 @@ export async function GET(
     }
 
     const transaction = await prisma.transaction.findUnique({
-      where: { id },
+      where: { id, createdBy: { id: userId } },
       include: {
         category: true,
         createdBy: {
@@ -67,7 +71,7 @@ export async function DELETE(
 ) {
   try {
     const id = parseInt(params.id)
-
+    const user = await getServerSession(authOptions)
     if (isNaN(id)) {
       return NextResponse.json(
         { error: 'Invalid transaction ID' },
@@ -76,7 +80,7 @@ export async function DELETE(
     }
 
     await prisma.transaction.delete({
-      where: { id },
+      where: { id, createdBy: { id: parseInt(user?.user.id) } },
     })
 
     return NextResponse.json({ message: 'Transaction deleted successfully' })
