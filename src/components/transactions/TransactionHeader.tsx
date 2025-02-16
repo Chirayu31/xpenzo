@@ -1,7 +1,7 @@
 import React from 'react'
 import { DatePickerWithRange } from './date-range-picker'
 import { DateRange } from 'react-day-picker'
-import { CreditCard, TrendingDown, TrendingUp } from 'lucide-react'
+import { CreditCard, Banknote, Receipt } from 'lucide-react'
 
 interface TransactionHeaderProps {
   setDates: React.Dispatch<React.SetStateAction<DateRange | undefined>>
@@ -38,16 +38,16 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
         </div>
 
         <div className='flex justify-center items-center gap-3'>
-          <div className='flex items-center gap-1'>
-            <TrendingUp className='h-6 w-6 text-green-500 dark:text-green-300' />
-            <p className='text-sm text-green-500 dark:text-green-300'>
+          <div className='flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-full'>
+            <Banknote className='h-5 w-5 text-green-500 dark:text-green-300' />
+            <p className='text-sm font-medium text-green-500 dark:text-green-300'>
               ₹ {incomeAmount}
             </p>
           </div>
 
-          <div className='flex items-center gap-1'>
-            <TrendingDown className='h-6 w-6 text-red-500 dark:text-red-300' />
-            <p className='text-sm text-red-500 dark:text-red-300'>
+          <div className='flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-full'>
+            <Receipt className='h-5 w-5 text-red-500 dark:text-red-300' />
+            <p className='text-sm font-medium text-red-500 dark:text-red-300'>
               ₹ {expenseAmount}
             </p>
           </div>
