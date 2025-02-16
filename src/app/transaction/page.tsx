@@ -1,9 +1,9 @@
 'use client'
 import TransactionContainer from '@/components/transactions/TransactionContainer'
 import TransactionHeader from '@/components/transactions/TransactionHeader'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import Error500 from '@/components/ui/error'
+import Loader from '@/components/ui/loader'
 import apiCaller from '@/utils/apiCaller'
-import { TransactionType } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { startOfMonth } from 'date-fns'
 import React from 'react'
@@ -32,12 +32,20 @@ const ViewTransactions = () => {
   })
 
   if (isTransactionLoading) {
-    return <p>Loading...</p>
+    return <Loader />
+  }
+
+  if (isTransactionError) {
+    return <Error500 />
   }
 
   return (
-    <div className='m-10'>
-      <TransactionHeader dates={dates} setDates={setDates} />
+    <div className='mt-5 mx-2 md:mx-24 '>
+      <TransactionHeader
+        dates={dates}
+        setDates={setDates}
+        transactionCount={transactions?.length}
+      />
       <TransactionContainer transactions={transactions} />
     </div>
   )

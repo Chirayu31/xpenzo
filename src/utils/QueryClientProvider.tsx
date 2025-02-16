@@ -1,19 +1,22 @@
-"use client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from "react";
+'use client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { SessionProvider } from 'next-auth/react'
+import React from 'react'
 
 interface QueryClientProviderWrapperProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 const QueryClientProviderWrapper: React.FC<QueryClientProviderWrapperProps> = ({
   children,
 }) => {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-};
+    <SessionProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </SessionProvider>
+  )
+}
 
-export default QueryClientProviderWrapper;
+export default QueryClientProviderWrapper

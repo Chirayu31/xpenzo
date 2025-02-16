@@ -35,6 +35,9 @@ import { TransactionType } from '@prisma/client'
 import apiCaller from '@/utils/apiCaller'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { category } from '@/types/category'
+import { useToast } from '@/hooks/use-toast'
+import { ToastAction } from '@/components/ui/toast'
+import { redirect } from 'next/navigation'
 
 interface TransactionFormProps {
   form: UseFormReturn<z.infer<typeof AddTransactionModalSchema>>
@@ -43,6 +46,7 @@ interface TransactionFormProps {
 const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
   const [isSplit, setIsSplit] = useState(false)
   const [splitData, setSplitData] = useState<z.infer<typeof AddSplitsSchema>>()
+  const { toast } = useToast()
   const {
     isLoading: categoryLoading,
     isError: isCategoryError,
@@ -60,6 +64,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
     },
     onSuccess: () => {
       form.reset()
+      toast({
+        title: 'Successful',
+        description: 'Transaction added successfully',
+      })
     },
     onError: (error: Error) => {
       console.log(error)
@@ -224,8 +232,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
           <Label htmlFor='split-transaction'>Split Transaction</Label>
         </div> */}
 
-        <Button className='w-full' variant={'default'} type='submit'>
-          Submit
+        <Button
+          className='w-full'
+          variant={'default'}
+          type='submit'
+          disabled={formMutation.isPending}>
+          {formMutation.isPending ? 'Submitting...' : 'Submit'}
         </Button>
       </form>
     </Form>

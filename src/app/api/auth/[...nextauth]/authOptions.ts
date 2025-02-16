@@ -1,5 +1,6 @@
 import prisma from '@/utils/prismaClient'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { TransactionType } from '@prisma/client'
 import { AuthOptions } from 'next-auth'
 import Google from 'next-auth/providers/google'
 
@@ -23,6 +24,26 @@ const authOptions: AuthOptions = {
         token.uid = user.id
       }
       return token
+    },
+  },
+  events: {
+    createUser: async ({ user }) => {
+      await prisma.category.createMany({
+        data: [
+          {
+            title: 'Uncategorized Expense',
+            type: TransactionType.EXPENSE,
+            isDefault: true,
+            userId: parseInt(user.id),
+          },
+          {
+            title: 'Uncategorized Income',
+            type: TransactionType.INCOME,
+            isDefault: true,
+            userId: parseInt(user.id),
+          },
+        ],
+      })
     },
   },
   session: {

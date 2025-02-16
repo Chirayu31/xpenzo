@@ -20,6 +20,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import apiCaller from '@/utils/apiCaller'
 import { ADD_CATEGORY_ROUTE } from '@/constants/apiRoutes'
+import { toDate } from 'date-fns'
+import { useToast } from '@/hooks/use-toast'
 
 interface AddCategoryProps {
   onCategoryAdded: () => void
@@ -33,7 +35,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onCategoryAdded }) => {
       type: TransactionType.EXPENSE,
     },
   })
-
+  const { toast } = useToast()
   const formMutation = useMutation({
     mutationFn: async (values: z.infer<typeof CategorySchema>) => {
       const response = await apiCaller.post(ADD_CATEGORY_ROUTE, values)
@@ -42,6 +44,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onCategoryAdded }) => {
     onSuccess: () => {
       onCategoryAdded()
       form.reset()
+      toast({ title: 'Category added successfully' })
     },
     onError: (error: Error) => {
       console.log(error)

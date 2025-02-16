@@ -1,17 +1,8 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Session } from 'next-auth'
-import { signIn, signOut } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 
-const LoginButton = ({ session }: { session: Session | null }) => {
-  if (session !== null && session.user)
-    return (
-      <>
-        <p>You are signed in as {session.user.id}</p>
-        <Button onClick={() => signOut()}>Logout</Button>
-      </>
-    )
-
+const LoginButton = () => {
   return <Button onClick={() => signIn('google')}>Login</Button>
 }
 

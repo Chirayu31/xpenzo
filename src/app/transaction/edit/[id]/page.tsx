@@ -1,10 +1,13 @@
 'use client'
 import TransactionCard from '@/components/transactions/edit/TransactionCard'
 import TransactionForm from '@/components/transactions/edit/TransactionForm'
+import Error500 from '@/components/ui/error'
+import Loader from '@/components/ui/loader'
 import apiCaller from '@/utils/apiCaller'
 import { EditTransactionSchema } from '@/validation/transactions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
+import { notFound } from 'next/navigation'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -12,18 +15,13 @@ import { z } from 'zod'
 const EditTransaction = ({ params }: { params: { id: string } }) => {
   const id = params.id
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['transaction', id],
     queryFn: async () => await apiCaller.get(`/api/transactions/${id}`),
   })
 
   const editTransactionForm = useForm<z.infer<typeof EditTransactionSchema>>({
     resolver: zodResolver(EditTransactionSchema),
-    defaultValues: {
-      date: data,
-      description: '',
-      amount: 0,
-    },
   })
 
   useEffect(() => {
@@ -40,11 +38,15 @@ const EditTransaction = ({ params }: { params: { id: string } }) => {
   }, [data, editTransactionForm])
 
   if (isLoading) {
-    return <p>Loading...</p>
+    return <Loader />
+  }
+
+  if (data === null) {
+    return notFound()
   }
 
   if (isError) {
-    return <p>Transaction Not Found</p>
+    return <Error500 />
   }
 
   return (

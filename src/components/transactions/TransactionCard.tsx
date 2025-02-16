@@ -3,16 +3,24 @@ import { Card, CardContent } from '@/components/ui/card'
 import { TransactionType } from '@prisma/client'
 import { stringToHexColor } from '@/utils/transactionUtility'
 import { Transaction } from '@/types/transaction'
+import { useRouter } from 'next/navigation'
 
 interface TransactionCardProps {
   transaction: Transaction
 }
 
 const TransactionCard = ({ transaction }: TransactionCardProps) => {
+  const router = useRouter()
   const color = stringToHexColor(transaction.description)
 
+  const handleCardClick = () => {
+    router.push(`/transaction/edit/${transaction.id}`)
+  }
+
   return (
-    <Card className='py-2 w-[500px] border-0 hover:border-b-slate-100 hover:border-b-2 rounded-none cursor-pointer'>
+    <Card
+      className='py-2 w-full mx-2 md:w-[500px] border-0 hover:border-b-slate-100 hover:border-b-2 rounded-none cursor-pointer'
+      onClick={handleCardClick}>
       <CardContent className='flex-col py-0'>
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>

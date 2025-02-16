@@ -5,7 +5,8 @@ import { Trash2 } from 'lucide-react'
 import { category } from '@/types/category'
 import { convertToSentenceCase } from '@/utils/commonUtility'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import { useToast } from '@/hooks/use-toast'
+import apiCaller from '@/utils/apiCaller'
 
 interface CategoryTabsContentProps {
   type: string
@@ -17,12 +18,16 @@ const CategoryItem: React.FC<{
   category: category
   refetchCategories: () => void
 }> = ({ category, refetchCategories }) => {
+  const { toast } = useToast()
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id: number) => {
-      await axios.delete(`/api/category/${id}`)
+      await apiCaller.delete(`/api/category/${id}`)
     },
     onSuccess: () => {
       refetchCategories()
+    },
+    onError: (error) => {
+      toast({ title: 'Some error occured' })
     },
   })
 
@@ -38,14 +43,16 @@ const CategoryItem: React.FC<{
           : ''
       }`}>
       <span>{category.title}</span>
-      <Button
-        variant='ghost'
-        size='icon'
-        onClick={handleDeleteCategory}
-        disabled={deleteCategoryMutation.isPending}
-        className='h-8 w-8'>
-        <Trash2 className='h-4 w-4' />
-      </Button>
+      {!category.isDefault && (
+        <Button
+          variant='ghost'
+          size='icon'
+          onClick={handleDeleteCategory}
+          disabled={deleteCategoryMutation.isPending}
+          className='h-8 w-8'>
+          <Trash2 className='h-4 w-4' />
+        </Button>
+      )}
     </div>
   )
 }

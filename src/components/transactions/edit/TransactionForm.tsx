@@ -35,6 +35,7 @@ import { TransactionType } from '@prisma/client'
 import apiCaller from '@/utils/apiCaller'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { category } from '@/types/category'
+import { useRouter } from 'next/navigation'
 
 interface TransactionFormProps {
   form: UseFormReturn<z.infer<typeof EditTransactionSchema>>
@@ -43,6 +44,7 @@ interface TransactionFormProps {
 const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
   const [isSplit, setIsSplit] = useState(false)
   const [splitData, setSplitData] = useState<z.infer<typeof AddSplitsSchema>>()
+  const router = useRouter()
   const {
     isLoading: categoryLoading,
     isError: isCategoryError,
@@ -60,6 +62,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
     },
     onSuccess: () => {
       form.reset()
+      router.push('/transaction')
     },
     onError: (error: Error) => {
       console.log(error)
@@ -73,6 +76,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
     },
     onSuccess: () => {
       form.reset()
+      router.push('/transaction')
     },
     onError: (error: Error) => {
       console.log(error)
@@ -92,7 +96,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
 
   const handleFormSubmit = (data: z.infer<typeof EditTransactionSchema>) => {
     try {
-      console.log(data)
       const transactionType = getCategoryType(data.category_id)
       data.type = transactionType
       formMutation.mutate(data)
@@ -245,16 +248,21 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
           <Label htmlFor='split-transaction'>Split Transaction</Label>
         </div> */}
         <div className='flex gap-2'>
-          <Button className='w-full' variant={'default'} type='submit'>
-            Submit
+          <Button
+            className='w-full'
+            variant={'default'}
+            type='submit'
+            disabled={formMutation.isPending || deleteMutation.isPending}>
+            {formMutation.isPending ? 'Submitting...' : 'Submit'}
           </Button>
 
           <Button
             className='w-full'
             variant={'destructive'}
             onClick={handleDeleteTransaction}
-            type='button'>
-            Delete
+            type='button'
+            disabled={formMutation.isPending || deleteMutation.isPending}>
+            {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
           </Button>
         </div>
       </form>

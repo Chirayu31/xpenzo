@@ -9,7 +9,10 @@ const apiCaller = {
       })
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        if (response.status === 404) {
+          return null
+        }
+        throw new Error(`Internal Server Error`)
       }
       const data = await response.json()
       return data

@@ -1,18 +1,17 @@
-"use client";
-import CategoryHeader from "@/components/category/Header";
-import CategoryTabs from "@/components/category/Tabs";
-import React from "react";
+'use client'
+import CategoryHeader from '@/components/category/Header'
+import CategoryTabs from '@/components/category/Tabs'
+import React from 'react'
 
 const Category = () => {
-  
   return (
-    <div className="m-10">
+    <div className='mt-5 mx-2 md:mx-24'>
       <CategoryHeader />
-      <div className="flex w-full justify-center">
+      <div className='mt-2 bg-white rounded-lg shadow-sm'>
         <CategoryTabs />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Category;
+export default Category

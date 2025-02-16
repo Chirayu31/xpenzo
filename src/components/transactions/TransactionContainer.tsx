@@ -1,6 +1,7 @@
 import React from 'react'
 import TransactionCard from './TransactionCard'
 import { Transaction } from '@/types/transaction'
+import Link from 'next/link'
 
 interface TransactionContainerProps {
   transactions: Transaction[]
@@ -11,9 +12,10 @@ const TransactionContainer: React.FC<TransactionContainerProps> = ({
 }) => {
   return (
     <div className='flex-col w-full justify-items-center mt-10'>
-      {transactions.map((transaction) => (
-        <TransactionCard key={transaction.id} transaction={transaction} />
-      ))}
+      {transactions &&
+        transactions.map((transaction) => (
+          <TransactionCard key={transaction.id} transaction={transaction} />
+        ))}
     </div>
   )
 }

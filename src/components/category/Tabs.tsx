@@ -5,6 +5,8 @@ import CategoryTabsContent from './CategoryTabsContent'
 import AddCategory from './AddCategory'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import apiCaller from '@/utils/apiCaller'
+import Loader from '../ui/loader'
+import Error500 from '../ui/error'
 
 const Add = 'Add'
 
@@ -21,39 +23,43 @@ const CategoryTabs = () => {
   }
 
   if (isLoading) {
-    return <p>Loading...</p>
+    return <Loader />
   }
 
   if (isError) {
-    return <p className='text-red-400'>Internal Server Error.</p>
+    return <Error500 />
   }
 
   return (
-    <Tabs className='w-[500px] mt-8' defaultValue={TransactionType.EXPENSE}>
-      <TabsList>
-        <TabsTrigger value={TransactionType.EXPENSE}>Expense</TabsTrigger>
-        <TabsTrigger value={TransactionType.INCOME}>Income</TabsTrigger>
-        <TabsTrigger value={Add}>Add New</TabsTrigger>
-      </TabsList>
+    <div className='flex w-full justify-center'>
+      <Tabs
+        className='w-full md:w-[500px]'
+        defaultValue={TransactionType.EXPENSE}>
+        <TabsList>
+          <TabsTrigger value={TransactionType.EXPENSE}>Expense</TabsTrigger>
+          <TabsTrigger value={TransactionType.INCOME}>Income</TabsTrigger>
+          <TabsTrigger value={Add}>Add New</TabsTrigger>
+        </TabsList>
 
-      <TabsContent value={TransactionType.EXPENSE}>
-        <CategoryTabsContent
-          type={TransactionType.EXPENSE}
-          categories={data}
-          refetchCategories={refetchCategories}
-        />
-      </TabsContent>
-      <TabsContent value={TransactionType.INCOME}>
-        <CategoryTabsContent
-          type={TransactionType.INCOME}
-          categories={data}
-          refetchCategories={refetchCategories}
-        />
-      </TabsContent>
-      <TabsContent value={Add}>
-        <AddCategory onCategoryAdded={refetchCategories} />
-      </TabsContent>
-    </Tabs>
+        <TabsContent value={TransactionType.EXPENSE}>
+          <CategoryTabsContent
+            type={TransactionType.EXPENSE}
+            categories={data}
+            refetchCategories={refetchCategories}
+          />
+        </TabsContent>
+        <TabsContent value={TransactionType.INCOME}>
+          <CategoryTabsContent
+            type={TransactionType.INCOME}
+            categories={data}
+            refetchCategories={refetchCategories}
+          />
+        </TabsContent>
+        <TabsContent value={Add}>
+          <AddCategory onCategoryAdded={refetchCategories} />
+        </TabsContent>
+      </Tabs>
+    </div>
   )
 }
 

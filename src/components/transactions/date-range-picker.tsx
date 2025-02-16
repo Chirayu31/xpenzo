@@ -32,10 +32,10 @@ export function DatePickerWithRange({
             id='date'
             variant={'outline'}
             className={cn(
-              'w-[260px] justify-start text-left font-normal',
+              'min-w-[240px] w-full sm:w-[260px] justify-start text-left font-normal',
               !dates && 'text-muted-foreground'
             )}>
-            <CalendarIcon className='h-4 w-4 opacity-50 mr-2' />
+            <CalendarIcon className='h-4 md:w-4 opacity-50 mr-2' />
             {dates?.from ? (
               dates.to ? (
                 <>
