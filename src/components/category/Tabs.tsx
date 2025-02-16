@@ -35,10 +35,12 @@ const CategoryTabs = () => {
       <Tabs
         className='w-full md:w-[500px]'
         defaultValue={TransactionType.EXPENSE}>
-        <TabsList>
+        <TabsList className='grid grid-cols-5'>
           <TabsTrigger value={TransactionType.EXPENSE}>Expense</TabsTrigger>
           <TabsTrigger value={TransactionType.INCOME}>Income</TabsTrigger>
-          <TabsTrigger value={Add}>Add New</TabsTrigger>
+          <TabsTrigger value={TransactionType.SAVINGS}>Savings</TabsTrigger>
+          <TabsTrigger value={TransactionType.INVESTMENT}>Invest.</TabsTrigger>
+          <TabsTrigger value={Add}>Add</TabsTrigger>
         </TabsList>
 
         <TabsContent value={TransactionType.EXPENSE}>
@@ -51,6 +53,20 @@ const CategoryTabs = () => {
         <TabsContent value={TransactionType.INCOME}>
           <CategoryTabsContent
             type={TransactionType.INCOME}
+            categories={data}
+            refetchCategories={refetchCategories}
+          />
+        </TabsContent>
+        <TabsContent value={TransactionType.SAVINGS}>
+          <CategoryTabsContent
+            type={TransactionType.SAVINGS}
+            categories={data}
+            refetchCategories={refetchCategories}
+          />
+        </TabsContent>
+        <TabsContent value={TransactionType.INVESTMENT}>
+          <CategoryTabsContent
+            type={TransactionType.INVESTMENT}
             categories={data}
             refetchCategories={refetchCategories}
           />

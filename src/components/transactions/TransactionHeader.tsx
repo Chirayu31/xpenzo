@@ -1,7 +1,13 @@
 import React from 'react'
 import { DatePickerWithRange } from './date-range-picker'
 import { DateRange } from 'react-day-picker'
-import { CreditCard, Banknote, Receipt } from 'lucide-react'
+import {
+  CreditCard,
+  Banknote,
+  Receipt,
+  PiggyBank,
+  TrendingUp,
+} from 'lucide-react'
 
 interface TransactionHeaderProps {
   setDates: React.Dispatch<React.SetStateAction<DateRange | undefined>>
@@ -9,6 +15,8 @@ interface TransactionHeaderProps {
   transactionCount?: number
   incomeAmount?: number
   expenseAmount?: number
+  savingsAmount?: number
+  investmentAmount?: number
 }
 
 const TransactionHeader: React.FC<TransactionHeaderProps> = ({
@@ -17,6 +25,8 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
   transactionCount = 0,
   incomeAmount,
   expenseAmount,
+  savingsAmount,
+  investmentAmount,
 }) => {
   return (
     <div className='bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-black p-4 rounded-lg'>
@@ -37,7 +47,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
           </div>
         </div>
 
-        <div className='flex justify-center items-center gap-3'>
+        <div className='flex flex-wrap justify-center items-center gap-3'>
           <div className='flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-full'>
             <Banknote className='h-5 w-5 text-green-500 dark:text-green-300' />
             <p className='text-sm font-medium text-green-500 dark:text-green-300'>
@@ -49,6 +59,20 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
             <Receipt className='h-5 w-5 text-red-500 dark:text-red-300' />
             <p className='text-sm font-medium text-red-500 dark:text-red-300'>
               ₹ {expenseAmount}
+            </p>
+          </div>
+
+          <div className='flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 rounded-full'>
+            <PiggyBank className='h-5 w-5 text-blue-500 dark:text-blue-300' />
+            <p className='text-sm font-medium text-blue-500 dark:text-blue-300'>
+              ₹ {savingsAmount}
+            </p>
+          </div>
+
+          <div className='flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 px-3 py-1.5 rounded-full'>
+            <TrendingUp className='h-5 w-5 text-purple-500 dark:text-purple-300' />
+            <p className='text-sm font-medium text-purple-500 dark:text-purple-300'>
+              ₹ {investmentAmount}
             </p>
           </div>
         </div>

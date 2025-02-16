@@ -135,4 +135,6 @@ model Settlement {
 enum TransactionType {
   EXPENSE
   INCOME
+  SAVINGS
+  INVESTMENT
 }

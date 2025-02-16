@@ -31,7 +31,7 @@ const authOptions: AuthOptions = {
       await prisma.category.createMany({
         data: [
           {
-            title: 'Uncategorized Expense',
+            title: 'Uncategorized Expenses',
             type: TransactionType.EXPENSE,
             isDefault: true,
             userId: parseInt(user.id),
@@ -39,6 +39,18 @@ const authOptions: AuthOptions = {
           {
             title: 'Uncategorized Income',
             type: TransactionType.INCOME,
+            isDefault: true,
+            userId: parseInt(user.id),
+          },
+          {
+            title: 'Uncategorized Savings',
+            type: TransactionType.SAVINGS,
+            isDefault: true,
+            userId: parseInt(user.id),
+          },
+          {
+            title: 'Uncategorized Investments',
+            type: TransactionType.INVESTMENT,
             isDefault: true,
             userId: parseInt(user.id),
           },

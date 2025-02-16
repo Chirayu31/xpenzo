@@ -38,6 +38,10 @@ const TransactionCard = ({ transaction }: TransactionCardProps) => {
                   ? 'text-red-500'
                   : transaction.type === TransactionType.INCOME
                   ? 'text-green-500'
+                  : transaction.type === TransactionType.SAVINGS
+                  ? 'text-blue-500'
+                  : transaction.type === TransactionType.INVESTMENT
+                  ? 'text-purple-500'
                   : ''
               } font-semibold`}>
             {`₹ ${transaction.amount}`}

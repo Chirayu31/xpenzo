@@ -91,7 +91,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onCategoryAdded }) => {
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className='flex items-center gap-4'>
+                      className='flex-col items-center gap-4'>
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>
                           <RadioGroupItem value={TransactionType.EXPENSE} />
@@ -103,6 +103,20 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onCategoryAdded }) => {
                           <RadioGroupItem value={TransactionType.INCOME} />
                         </FormControl>
                         <FormLabel className='font-normal'>Income</FormLabel>
+                      </FormItem>
+                      <FormItem className='flex items-center space-x-3 space-y-0'>
+                        <FormControl>
+                          <RadioGroupItem value={TransactionType.SAVINGS} />
+                        </FormControl>
+                        <FormLabel className='font-normal'>Savings</FormLabel>
+                      </FormItem>
+                      <FormItem className='flex items-center space-x-3 space-y-0'>
+                        <FormControl>
+                          <RadioGroupItem value={TransactionType.INVESTMENT} />
+                        </FormControl>
+                        <FormLabel className='font-normal'>
+                          Investment
+                        </FormLabel>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>

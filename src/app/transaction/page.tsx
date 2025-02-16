@@ -52,6 +52,14 @@ const ViewTransactions = () => {
     transactions,
     TransactionType.EXPENSE
   )
+  const savingsAmount = calculateTransactionAmount(
+    transactions,
+    TransactionType.SAVINGS
+  )
+  const investmentAmount = calculateTransactionAmount(
+    transactions,
+    TransactionType.INVESTMENT
+  )
 
   if (isTransactionLoading) {
     return <Loader />
@@ -69,6 +77,8 @@ const ViewTransactions = () => {
         transactionCount={transactions?.length}
         incomeAmount={incomeAmount}
         expenseAmount={expenseAmount}
+        savingsAmount={savingsAmount}
+        investmentAmount={investmentAmount}
       />
       <TransactionContainer transactions={transactions} />
     </div>
