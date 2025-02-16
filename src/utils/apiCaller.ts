@@ -34,7 +34,7 @@ const apiCaller = {
 
       const data = await response.json()
       if (!response.ok) {
-        throw new Error(data.error ?? 'An error occurred')
+        throw new Error(data.message ?? 'An error occurred')
       }
 
       return data
@@ -56,7 +56,7 @@ const apiCaller = {
 
       const data = await response.json()
       if (!response.ok) {
-        throw new Error(data.error ?? 'An error occurred')
+        throw new Error(data.message ?? 'An error occurred')
       }
 
       return data
@@ -77,7 +77,7 @@ const apiCaller = {
 
       const data = await response.json()
       if (!response.ok) {
-        throw new Error(data.error ?? 'An error occurred')
+        throw new Error(data.message ?? 'An error occurred')
       }
 
       return data
