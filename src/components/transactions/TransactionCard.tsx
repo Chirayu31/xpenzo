@@ -43,14 +43,15 @@ const TransactionCard = ({ transaction }: TransactionCardProps) => {
             {`₹ ${transaction.amount}`}
           </p>
         </div>
-        <div className='flex justify-between items-center'>
-          <p className='text-xs text-gray-500'>
+        <div className='flex justify-between items-center text-xs text-gray-500'>
+          <p>
             {new Date(transaction.createdAt).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
             })}
           </p>
+          <p>{transaction.category?.title ?? ''}</p>
         </div>
       </CardContent>
     </Card>

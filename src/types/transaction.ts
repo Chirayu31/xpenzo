@@ -1,4 +1,5 @@
 import { TransactionType } from '@prisma/client'
+import { category } from './category'
 
 export interface Transaction {
   id: number
@@ -8,6 +9,7 @@ export interface Transaction {
   amount: number
   createdById: number
   categoryId: number
+  category: category
   createdAt: Date
   updatedAt: Date
 }

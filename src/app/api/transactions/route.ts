@@ -76,6 +76,9 @@ export async function GET(req: NextRequest) {
     orderBy: {
       createdAt: 'desc',
     },
+    include: {
+      category: true,
+    },
   })
 
   return NextResponse.json(transactions)
