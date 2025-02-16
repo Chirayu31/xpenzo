@@ -36,8 +36,6 @@ import apiCaller from '@/utils/apiCaller'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { category } from '@/types/category'
 import { useToast } from '@/hooks/use-toast'
-import { ToastAction } from '@/components/ui/toast'
-import { redirect } from 'next/navigation'
 
 interface TransactionFormProps {
   form: UseFormReturn<z.infer<typeof AddTransactionModalSchema>>
