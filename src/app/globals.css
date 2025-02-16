@@ -59,6 +59,51 @@
   }
 }
 
+@keyframes waterflow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 150% 50%;
+  }
+  100% {
+    background-position: 300% 50%;
+  }
+}
+
+@keyframes gridFade {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translateY(-0.5px);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(0.5px);
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-grid-line {
+  opacity: 0.2;
+  animation: gridFade 4s ease-in-out infinite;
+  animation-delay: calc(var(--delay) * 200ms);
+  backdrop-filter: blur(1px);
+}
+
+.animate-waterflow {
+  animation: waterflow 8s ease infinite;
+  background-size: 300% auto;
+}
+
 @layer base {
   * {
     @apply border-border;
