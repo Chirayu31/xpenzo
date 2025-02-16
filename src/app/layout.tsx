@@ -4,7 +4,6 @@ import './globals.css'
 import QueryClientProviderWrapper from '@/utils/QueryClientProvider'
 import { Toaster } from '@/components/ui/toaster'
 import Navbar from '@/components/ui/nav'
-import { SessionProvider } from 'next-auth/react'
 import { ThemeProvider } from '@/utils/theme-provider'
 
 const inter = Montserrat({

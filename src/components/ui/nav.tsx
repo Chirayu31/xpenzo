@@ -15,7 +15,7 @@ const Navbar = () => {
     setIsOpen(false)
   }, [pathname])
 
-  if (user.status === 'unauthenticated') {
+  if (user.status === 'unauthenticated' || user.status === 'loading') {
     return null
   }
 
