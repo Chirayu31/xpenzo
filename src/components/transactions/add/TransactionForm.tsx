@@ -117,7 +117,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder='shadcn' {...field} />
+                <Input placeholder='Salary...' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
