@@ -1,18 +1,22 @@
 import React from 'react'
 import { DatePickerWithRange } from './date-range-picker'
 import { DateRange } from 'react-day-picker'
-import { CreditCard, TrendingUp } from 'lucide-react'
+import { CreditCard, TrendingDown, TrendingUp } from 'lucide-react'
 
 interface TransactionHeaderProps {
   setDates: React.Dispatch<React.SetStateAction<DateRange | undefined>>
   dates: DateRange | undefined
   transactionCount?: number
+  incomeAmount?: number
+  expenseAmount?: number
 }
 
 const TransactionHeader: React.FC<TransactionHeaderProps> = ({
   setDates,
   dates,
   transactionCount = 0,
+  incomeAmount,
+  expenseAmount,
 }) => {
   return (
     <div className='bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-black p-4 rounded-lg'>
@@ -29,6 +33,22 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
               {transactionCount}{' '}
               {transactionCount === 1 ? 'transaction' : 'transactions'} this
               period
+            </p>
+          </div>
+        </div>
+
+        <div className='flex justify-center items-center gap-3'>
+          <div className='flex items-center gap-1'>
+            <TrendingUp className='h-6 w-6 text-green-500 dark:text-green-300' />
+            <p className='text-sm text-green-500 dark:text-green-300'>
+              ₹ {incomeAmount}
+            </p>
+          </div>
+
+          <div className='flex items-center gap-1'>
+            <TrendingDown className='h-6 w-6 text-red-500 dark:text-red-300' />
+            <p className='text-sm text-red-500 dark:text-red-300'>
+              ₹ {expenseAmount}
             </p>
           </div>
         </div>

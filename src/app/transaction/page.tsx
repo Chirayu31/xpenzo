@@ -3,11 +3,24 @@ import TransactionContainer from '@/components/transactions/TransactionContainer
 import TransactionHeader from '@/components/transactions/TransactionHeader'
 import Error500 from '@/components/ui/error'
 import Loader from '@/components/ui/loader'
+import { Transaction } from '@/types/transaction'
 import apiCaller from '@/utils/apiCaller'
+import { TransactionType } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { startOfMonth } from 'date-fns'
 import React from 'react'
 import { DateRange } from 'react-day-picker'
+
+const calculateTransactionAmount = (
+  transactions: Transaction[] | undefined,
+  type: TransactionType
+): number => {
+  return (
+    transactions
+      ?.filter((t) => t.type === type)
+      .reduce((acc, curr) => acc + curr.amount, 0) || 0
+  )
+}
 
 const ViewTransactions = () => {
   const [dates, setDates] = React.useState<DateRange | undefined>({
@@ -31,6 +44,15 @@ const ViewTransactions = () => {
     enabled: !!dates?.from && !!dates?.to,
   })
 
+  const incomeAmount = calculateTransactionAmount(
+    transactions,
+    TransactionType.INCOME
+  )
+  const expenseAmount = calculateTransactionAmount(
+    transactions,
+    TransactionType.EXPENSE
+  )
+
   if (isTransactionLoading) {
     return <Loader />
   }
@@ -45,6 +67,8 @@ const ViewTransactions = () => {
         dates={dates}
         setDates={setDates}
         transactionCount={transactions?.length}
+        incomeAmount={incomeAmount}
+        expenseAmount={expenseAmount}
       />
       <TransactionContainer transactions={transactions} />
     </div>
