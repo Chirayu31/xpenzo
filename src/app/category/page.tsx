@@ -7,7 +7,7 @@ const Category = () => {
   return (
     <div className='mt-5 mx-2 md:mx-24'>
       <CategoryHeader />
-      <div className='mt-2 bg-white rounded-lg shadow-sm'>
+      <div className='mt-4 rounded-lg shadow-sm'>
         <CategoryTabs />
       </div>
     </div>

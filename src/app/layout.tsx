@@ -5,6 +5,7 @@ import QueryClientProviderWrapper from '@/utils/QueryClientProvider'
 import { Toaster } from '@/components/ui/toaster'
 import Navbar from '@/components/ui/nav'
 import { SessionProvider } from 'next-auth/react'
+import { ThemeProvider } from '@/utils/theme-provider'
 
 const inter = Montserrat({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -24,11 +25,17 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <QueryClientProviderWrapper>
-          <Navbar />
-          {children}
-        </QueryClientProviderWrapper>
-        <Toaster />
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange>
+          <QueryClientProviderWrapper>
+            <Navbar />
+            {children}
+            <Toaster />
+          </QueryClientProviderWrapper>
+        </ThemeProvider>
       </body>
     </html>
   )
