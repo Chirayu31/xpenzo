@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Transaction } from '@/types/transaction'
 import { TransactionType } from '@prisma/client'
-import { ChartContainer } from '../ui/chart'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart'
 import { type ChartConfig } from '@/components/ui/chart'
 import { Bar, BarChart, XAxis } from 'recharts'
 
@@ -51,7 +51,9 @@ const CategoryWiseGraph = ({ transactions }: CategoryWiseGraphProps) => {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
+              tickFormatter={(value) => value.slice(0, 4)}
             />
+            <ChartTooltip content={<ChartTooltipContent />} />
             <Bar dataKey='amount' fill='var(--color-amount)' radius={4} />
           </BarChart>
         </ChartContainer>
