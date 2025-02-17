@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     if (result.data.date) {
       dateWithNoon.setHours(12, 0, 0, 0)
     }
-
+    console.log('dateWithNoon', dateWithNoon)
     const transaction = await prisma.transaction.create({
       data: {
         description: result.data.description,
