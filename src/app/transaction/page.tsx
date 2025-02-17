@@ -4,6 +4,10 @@ import TransactionHeader from '@/components/transactions/TransactionHeader'
 import Error500 from '@/components/ui/error'
 import Loader from '@/components/ui/loader'
 import BottomNav from '@/components/transactions/BottomNav'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { FileIcon, Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Transaction } from '@/types/transaction'
 import apiCaller from '@/utils/apiCaller'
 import { TransactionType } from '@prisma/client'
@@ -12,6 +16,7 @@ import { startOfMonth } from 'date-fns'
 import React from 'react'
 import { DateRange } from 'react-day-picker'
 import Dashboard from '@/components/dashboard/Dashboard'
+import { DatePickerWithRange } from '@/components/transactions/date-range-picker'
 
 type Screen = 'dashboard' | 'transactions'
 
@@ -27,6 +32,7 @@ const calculateTransactionAmount = (
 }
 
 const ViewTransactions = () => {
+  const router = useRouter()
   const [currentScreen, setCurrentScreen] =
     React.useState<Screen>('transactions')
   const [dates, setDates] = React.useState<DateRange | undefined>({
@@ -115,11 +121,31 @@ const ViewTransactions = () => {
 
   if (transactions?.length === 0) {
     return (
-      <>
-        <div className='flex justify-center items-center h-96'>
-          <p className='text-lg font-semibold'>No transactions added yet.</p>
+      <div className='flex flex-col items-center justify-center min-h-[80vh] px-4'>
+        <div className='w-full max-w-md mb-8'>
+          <DatePickerWithRange dates={dates} setDates={setDates} />
         </div>
-      </>
+        <Card className='w-full max-w-md'>
+          <CardContent className='pt-6 text-center'>
+            <div className='rounded-full bg-muted w-20 h-20 mx-auto flex items-center justify-center'>
+              <FileIcon className='h-10 w-10 text-muted-foreground' />
+            </div>
+            <CardHeader>
+              <h3 className='text-xl font-semibold'>No transactions found</h3>
+              <p className='text-sm text-muted-foreground'>
+                There are no transactions for the selected date range. Create
+                your first transaction to get started.
+              </p>
+            </CardHeader>
+            <Button
+              onClick={() => router.push('/transaction/add')}
+              className='mt-2'>
+              <Plus className='w-4 h-4 mr-2' />
+              Add Transaction
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
