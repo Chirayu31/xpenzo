@@ -11,6 +11,16 @@ export async function POST(req: NextRequest) {
   const result = AddTransactionModalSchema.safeParse(body)
 
   if (result.success) {
+    const currentDate = new Date()
+    currentDate.setHours(12, 0, 0, 0)
+
+    const dateWithNoon = result.data.date
+      ? new Date(result.data.date)
+      : currentDate
+    if (result.data.date) {
+      dateWithNoon.setHours(12, 0, 0, 0)
+    }
+
     const transaction = await prisma.transaction.create({
       data: {
         description: result.data.description,
@@ -19,7 +29,7 @@ export async function POST(req: NextRequest) {
         groupId: result.data.group_id,
         categoryId: result.data.category_id,
         createdById: userId,
-        createdAt: result.data.date,
+        createdAt: dateWithNoon,
       },
     })
 
