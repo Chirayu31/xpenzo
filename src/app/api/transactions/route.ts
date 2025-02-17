@@ -12,15 +12,27 @@ export async function POST(req: NextRequest) {
 
   if (result.success) {
     const currentDate = new Date()
-    currentDate.setHours(12, 0, 0, 0)
+    // Set to IST (UTC+5:30)
+    currentDate.setHours(
+      currentDate.getHours() + 5,
+      currentDate.getMinutes() + 30,
+      0,
+      0
+    )
 
-    const dateWithNoon = result.data.date
+    const dateWithIST = result.data.date
       ? new Date(result.data.date)
       : currentDate
     if (result.data.date) {
-      dateWithNoon.setHours(12, 0, 0, 0)
+      // Set to IST (UTC+5:30)
+      dateWithIST.setHours(
+        dateWithIST.getHours() + 5,
+        dateWithIST.getMinutes() + 30,
+        0,
+        0
+      )
     }
-    console.log('dateWithNoon', dateWithNoon)
+
     const transaction = await prisma.transaction.create({
       data: {
         description: result.data.description,
@@ -29,7 +41,7 @@ export async function POST(req: NextRequest) {
         groupId: result.data.group_id,
         categoryId: result.data.category_id,
         createdById: userId,
-        createdAt: dateWithNoon,
+        createdAt: dateWithIST,
       },
     })
 
