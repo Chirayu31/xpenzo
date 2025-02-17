@@ -54,7 +54,10 @@ export async function POST(
   }
 }
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const groupId = parseInt(params.id)
 
