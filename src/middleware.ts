@@ -1,10 +1,4 @@
-import { withAuth } from 'next-auth/middleware'
-
-export default withAuth({
-  pages: {
-    signIn: '/', // Redirect to root for sign-in
-  },
-})
+export { default } from 'next-auth/middleware'
 
 export const config = {
   matcher: ['/transaction/:path*', '/category/:path*', '/logout'],
