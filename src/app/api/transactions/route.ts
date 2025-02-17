@@ -57,7 +57,8 @@ export async function GET(req: NextRequest) {
   }
 
   const startOfDay = new Date(startDate)
-  startOfDay.setHours(0, 0, 0, 0)
+  startOfDay.setDate(startOfDay.getDate() - 1)
+  startOfDay.setHours(23, 59, 59, 999)
 
   const endOfDay = new Date(endDate)
   endOfDay.setHours(23, 59, 59, 999)
