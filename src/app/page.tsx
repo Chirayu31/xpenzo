@@ -52,8 +52,8 @@ export default async function Home() {
 
       {/* Content Container */}
       <div className='relative z-10 w-full text-center px-4'>
-        <WaterflowText text='xpenzo' />
-        <p className='text-xl md:text-2xl max-w-2xl mx-auto'>
+        <WaterflowText text='xpenzo' size='8xl' />
+        <p className='text-xl md:text-2xl max-w-2xl mx-auto mt-5'>
           Creating a simpler world for managing your finances
         </p>
         <div className='mt-8'>
